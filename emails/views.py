@@ -39,8 +39,12 @@ def upload_csv(request):
             html_message = render_to_string('email_template.html', {
             })
 
-            send_bulk_emails.delay(subject, html_message, from_email, email_list)
-
+            send_bulk_emails.delay(
+            email_subject='öka era intäkter med more channel',
+            email_template='email_template.html',  # Path to your email template
+            email_from=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=email_list  # List of email addresses
+)
             return render(request, 'upload_success.html')
     else:
         form = EmailUploadForm()
