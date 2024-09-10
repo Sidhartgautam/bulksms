@@ -21,7 +21,7 @@ def upload_csv(request):
             try:
                 decoded_file = csv_file.read().decode('utf-8').splitlines()
                 reader = csv.DictReader(decoded_file)
-                email_column = 'email'  # Assuming your CSV has an 'email' column
+                email_column = 'email' 
 
                 for row in reader:
                     email = row.get(email_column, '').strip()
@@ -34,14 +34,12 @@ def upload_csv(request):
             except Exception as e:
                 logger.error(f"Error reading CSV file: {e}")
                 return render(request, 'upload_csv.html', {'form': form, 'error': 'Error reading CSV file'})
+            subject = 'Öka era intäkter med More Channel!'
+            from_email = settings.DEFAULT_FROM_EMAIL
+            html_message = render_to_string('email_template.html', {
+            })
 
-            # Send emails using Celery task
-            send_bulk_emails.delay(
-                'Subject here',  # Subject
-                'This is your personalized message',  # Message
-                settings.DEFAULT_FROM_EMAIL,  # From email
-                email_list  # To email list
-            )
+            send_bulk_emails.delay(subject, html_message, from_email, email_list)
 
             return render(request, 'upload_success.html')
     else:
